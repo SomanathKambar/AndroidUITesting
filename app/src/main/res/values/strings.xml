@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">AndroidUITesting</string>
+    <string name="hello_world">Hello World!</string>
+    <string name="hello">Hello</string>
+</resources>
