@@ -7,15 +7,16 @@ import androidx.appcompat.widget.Toolbar
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.junit.Rule
@@ -29,12 +30,12 @@ class MainActivityTest {
     val  activityTestRule = ActivityTestRule<MainActivity>(MainActivity::class.java)
     @Test
     fun greet() {
-        Espresso.onView(ViewMatchers.withId(R.id.greetMessageView)).check(ViewAssertions.matches(
-            ViewMatchers.withText(R.string.hello_world)))
-        Espresso.onView(ViewMatchers.withId(R.id.greetButton)).perform(ViewActions.click())
-            .check(ViewAssertions.matches(ViewMatchers.isNotEnabled()))
-        Espresso.onView(ViewMatchers.withId(R.id.greetMessageView)).check(ViewAssertions.matches(
-            ViewMatchers.withText(R.string.hello)))
+        Espresso.onView(withId(R.id.greetMessageView)).check(ViewAssertions.matches(
+            withText(R.string.hello_world)))
+        Espresso.onView(withId(R.id.greetButton)).perform(ViewActions.click())
+            .check(ViewAssertions.matches(isNotEnabled()))
+        Espresso.onView(withId(R.id.greetMessageView)).check(ViewAssertions.matches(
+            withText(R.string.hello)))
     }
 
     @Test
@@ -43,7 +44,7 @@ class MainActivityTest {
         Espresso.onView(
             allOf(
                 isAssignableFrom(AppCompatTextView::class.java),
-                ViewMatchers.withParent(isAssignableFrom(Toolbar::class.java))
+                withParent(isAssignableFrom(Toolbar::class.java))
             )
         ).check(ViewAssertions.matches(withText(R.string.title)))
     }
@@ -74,5 +75,19 @@ class MainActivityTest {
             }
 
         }
+    }
+
+    @Test
+    fun clickItem() {
+        //this confirms footer is not visible
+        Espresso.onView(withId(R.id.footer))
+            .check(ViewAssertions.matches(not(isDisplayed())))
+        //this scrolls to 27th position and performs click
+        Espresso.onView(withId(R.id.recycler_view))
+            .perform(RecyclerViewActions.actionOnItemAtPosition<TextViewHolder>(27, ViewActions.click()))
+//this confirms footer is  visible
+        Espresso.onView(withId(R.id.footer))
+            .check(ViewAssertions.matches(withText("27")))
+            .check(ViewAssertions.matches(isDisplayed()))
     }
 }
