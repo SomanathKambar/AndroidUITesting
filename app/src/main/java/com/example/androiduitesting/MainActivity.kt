@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         greetMesaageView = findViewById(R.id.greetMessageView)
         greetButton = findViewById(R.id.greetButton)
+        setTitle(R.string.title)
     }
 
     fun greet(view: View) {
